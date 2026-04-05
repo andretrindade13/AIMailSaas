@@ -15,8 +15,15 @@ export const POST = async (req: Request) => {
         return new Response('Invalid payload', { status: 400 });
     }
     
-    await db.user.create({
-        data: {
+    await db.user.upsert({
+        where: { id: id },
+        update: {
+            firstName: firstName,
+            lastName: lastName,
+            emailAddress: emailAddress,
+            imageUrl: imageURL
+        },
+        create: {
             id: id,
             firstName: firstName,
             lastName: lastName,
