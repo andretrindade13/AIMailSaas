@@ -1,0 +1,10 @@
+language: "en-US"
+reviews:
+  profile: "chill"
+  request-changes-workflow: false
+  high-level-summary: true
+  auto-review:
+    enabled: true
+    drafts: false
+  chat:
+    auto-reply: true
