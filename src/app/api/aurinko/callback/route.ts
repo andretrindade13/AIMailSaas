@@ -1,11 +1,12 @@
+import {waitUntil} from "@vercel/functions";
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import { exchangeCodeForToken, getAccountInfo } from "@/lib/aurinko";
 import { db } from "@/server/db";
+import axios from "axios";
 
 export const GET = async (req: NextRequest) => {
     const {userId} = await auth()
-    console.log(userId)
     if(!userId) throw new Error('Unauthorized')
 
     const {searchParams} = req.nextUrl
@@ -23,6 +24,7 @@ export const GET = async (req: NextRequest) => {
     if(!infoAccount) return NextResponse.json({error: 'Failed to fetch account info'}, {status:500})
 
     // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+    console.log('accountId',tokenResponse.accountId)
     await db.account.upsert({
         where: {
             id: tokenResponse.accountId.toString()
@@ -38,6 +40,17 @@ export const GET = async (req: NextRequest) => {
             name: infoAccount.name ?? infoAccount.email
         }
     })
+
+    waitUntil(
+        axios.post(`${process.env.NEXT_PUBLIC_URL}/api/initial-sync`, {
+            accountId: tokenResponse.accountId,
+            userId
+        }).then(response => {
+            console.log( 'initial sync triggered', response.data)
+        }).catch(error => {
+            console.error('Failed to trigger initial sync', error)
+        })
+    )
 
     return NextResponse.redirect(new URL('/mail', req.url))
 

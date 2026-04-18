@@ -98,7 +98,28 @@ exports.Prisma.UserScalarFieldEnum = {
   emailAddress: 'emailAddress',
   firstName: 'firstName',
   lastName: 'lastName',
-  imageUrl: 'imageUrl'
+  imageUrl: 'imageUrl',
+  stripeSubscriptionId: 'stripeSubscriptionId',
+  role: 'role'
+};
+
+exports.Prisma.ChatbotInteractionScalarFieldEnum = {
+  id: 'id',
+  day: 'day',
+  count: 'count',
+  userId: 'userId'
+};
+
+exports.Prisma.StripeSubscriptionScalarFieldEnum = {
+  id: 'id',
+  createdAt: 'createdAt',
+  userId: 'userId',
+  subscriptionId: 'subscriptionId',
+  productId: 'productId',
+  priceId: 'priceId',
+  customerId: 'customerId',
+  currentPeriodEnd: 'currentPeriodEnd',
+  updatedAt: 'updatedAt'
 };
 
 exports.Prisma.AccountScalarFieldEnum = {
@@ -106,12 +127,78 @@ exports.Prisma.AccountScalarFieldEnum = {
   userId: 'userId',
   accessToken: 'accessToken',
   emailAdress: 'emailAdress',
-  name: 'name'
+  name: 'name',
+  nextDeltaToken: 'nextDeltaToken'
+};
+
+exports.Prisma.ThreadScalarFieldEnum = {
+  id: 'id',
+  subject: 'subject',
+  lastMessageDate: 'lastMessageDate',
+  participantIds: 'participantIds',
+  accountId: 'accountId',
+  done: 'done',
+  inboxStatus: 'inboxStatus',
+  draftStatus: 'draftStatus',
+  sentStatus: 'sentStatus'
+};
+
+exports.Prisma.EmailScalarFieldEnum = {
+  id: 'id',
+  threadId: 'threadId',
+  createdTime: 'createdTime',
+  lastModifiedTime: 'lastModifiedTime',
+  sentAt: 'sentAt',
+  receivedAt: 'receivedAt',
+  internetMessageId: 'internetMessageId',
+  subject: 'subject',
+  sysLabels: 'sysLabels',
+  keywords: 'keywords',
+  sysClassifications: 'sysClassifications',
+  sensitivity: 'sensitivity',
+  meetingMessageMethod: 'meetingMessageMethod',
+  fromId: 'fromId',
+  hasAttachments: 'hasAttachments',
+  body: 'body',
+  bodySnippet: 'bodySnippet',
+  inReplyTo: 'inReplyTo',
+  references: 'references',
+  threadIndex: 'threadIndex',
+  internetHeaders: 'internetHeaders',
+  nativeProperties: 'nativeProperties',
+  folderId: 'folderId',
+  omitted: 'omitted',
+  emailLabel: 'emailLabel'
+};
+
+exports.Prisma.EmailAddressScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  address: 'address',
+  raw: 'raw',
+  accountId: 'accountId'
+};
+
+exports.Prisma.EmailAttachmentScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  mimeType: 'mimeType',
+  size: 'size',
+  inline: 'inline',
+  contentId: 'contentId',
+  content: 'content',
+  contentLocation: 'contentLocation',
+  emailId: 'emailId'
 };
 
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
+};
+
+exports.Prisma.NullableJsonNullValueInput = {
+  DbNull: Prisma.DbNull,
+  JsonNull: Prisma.JsonNull
 };
 
 exports.Prisma.QueryMode = {
@@ -124,10 +211,46 @@ exports.Prisma.NullsOrder = {
   last: 'last'
 };
 
+exports.Prisma.JsonNullValueFilter = {
+  DbNull: Prisma.DbNull,
+  JsonNull: Prisma.JsonNull,
+  AnyNull: Prisma.AnyNull
+};
+exports.Role = exports.$Enums.Role = {
+  user: 'user',
+  admin: 'admin'
+};
+
+exports.EmailLabel = exports.$Enums.EmailLabel = {
+  inbox: 'inbox',
+  sent: 'sent',
+  draft: 'draft'
+};
+
+exports.Sensitivity = exports.$Enums.Sensitivity = {
+  normal: 'normal',
+  private: 'private',
+  personal: 'personal',
+  confidential: 'confidential'
+};
+
+exports.MeetingMessageMethod = exports.$Enums.MeetingMessageMethod = {
+  request: 'request',
+  reply: 'reply',
+  cancel: 'cancel',
+  counter: 'counter',
+  other: 'other'
+};
 
 exports.Prisma.ModelName = {
   User: 'User',
-  Account: 'Account'
+  ChatbotInteraction: 'ChatbotInteraction',
+  StripeSubscription: 'StripeSubscription',
+  Account: 'Account',
+  Thread: 'Thread',
+  Email: 'Email',
+  EmailAddress: 'EmailAddress',
+  EmailAttachment: 'EmailAttachment'
 };
 /**
  * Create the Client
@@ -168,6 +291,7 @@ const config = {
     "db"
   ],
   "activeProvider": "postgresql",
+  "postinstall": false,
   "inlineDatasources": {
     "db": {
       "url": {
@@ -176,13 +300,13 @@ const config = {
       }
     }
   },
-  "inlineSchema": "generator client {\n  provider = \"prisma-client-js\"\n  output   = \"../generated/prisma\"\n}\n\ndatasource db {\n  provider = \"postgresql\"\n  url      = env(\"DATABASE_URL\")\n}\n\nmodel User {\n  id           String  @id @default(cuid())\n  emailAddress String  @unique\n  firstName    String\n  lastName     String\n  imageUrl     String?\n\n  accounts Account[]\n}\n\nmodel Account {\n  id          String @id @default(cuid())\n  userId      String\n  accessToken String @unique\n  emailAdress String\n  name        String\n\n  user User @relation(fields: [userId], references: [id])\n}\n",
-  "inlineSchemaHash": "33805cf3d393cb56905da349d7d44689d3b2a7316d4a8bc0d215127572470eb8",
+  "inlineSchema": "generator client {\n  provider = \"prisma-client-js\"\n  output   = \"../generated/prisma\"\n}\n\ndatasource db {\n  provider = \"postgresql\"\n  url      = env(\"DATABASE_URL\")\n}\n\nmodel User {\n  id                   String              @id @default(cuid())\n  emailAddress         String              @unique\n  firstName            String\n  lastName             String\n  imageUrl             String?\n  stripeSubscriptionId String?             @unique\n  stripeSubscription   StripeSubscription? @relation(fields: [stripeSubscriptionId], references: [id])\n\n  role               Role                @default(user)\n  accounts           Account[]\n  chatbotInteraction ChatbotInteraction?\n}\n\nenum Role {\n  user\n  admin\n}\n\nmodel ChatbotInteraction {\n  id String @id @default(cuid())\n\n  day   String\n  count Int    @default(1)\n\n  userId String? @unique\n  user   User?   @relation(fields: [userId], references: [id])\n\n  @@unique([day, userId])\n  @@index([day, userId])\n}\n\nmodel StripeSubscription {\n  id        String   @id @default(cuid())\n  createdAt DateTime @default(now())\n\n  userId String? @unique\n  user   User?\n\n  subscriptionId String? @unique\n  productId      String?\n  priceId        String?\n  customerId     String?\n\n  currentPeriodEnd DateTime\n  updatedAt        DateTime @updatedAt\n}\n\nmodel Account {\n  id             String  @id @default(cuid())\n  userId         String\n  accessToken    String  @unique\n  emailAdress    String\n  name           String\n  nextDeltaToken String?\n\n  user           User           @relation(fields: [userId], references: [id])\n  threads        Thread[]\n  emailAddresses EmailAddress[]\n}\n\nmodel Thread {\n  id              String   @id @default(cuid())\n  subject         String\n  lastMessageDate DateTime\n  participantIds  String[]\n  accountId       String\n  account         Account  @relation(fields: [accountId], references: [id])\n\n  done Boolean @default(false)\n\n  inboxStatus Boolean @default(true)\n  draftStatus Boolean @default(false)\n  sentStatus  Boolean @default(false)\n\n  emails Email[]\n\n  @@index([accountId])\n  @@index([done])\n  @@index([inboxStatus])\n  @@index([draftStatus])\n  @@index([sentStatus])\n  @@index([lastMessageDate])\n}\n\nmodel Email {\n  id                   String                @id @default(cuid())\n  threadId             String\n  thread               Thread                @relation(fields: [threadId], references: [id])\n  createdTime          DateTime\n  lastModifiedTime     DateTime\n  sentAt               DateTime\n  receivedAt           DateTime\n  internetMessageId    String\n  subject              String\n  sysLabels            String[]\n  keywords             String[]\n  sysClassifications   String[]\n  sensitivity          Sensitivity           @default(normal)\n  meetingMessageMethod MeetingMessageMethod?\n  from                 EmailAddress          @relation(\"FromEmail\", fields: [fromId], references: [id])\n  fromId               String\n  to                   EmailAddress[]        @relation(\"ToEmails\")\n  cc                   EmailAddress[]        @relation(\"CcEmails\")\n  bcc                  EmailAddress[]        @relation(\"BccEmails\")\n  replyTo              EmailAddress[]        @relation(\"ReplyToEmails\")\n  hasAttachments       Boolean\n  body                 String?\n  bodySnippet          String?\n  attachments          EmailAttachment[]\n  inReplyTo            String?\n  references           String?\n  threadIndex          String?\n  internetHeaders      Json[]\n  nativeProperties     Json?\n  folderId             String?\n  omitted              String[]\n\n  emailLabel EmailLabel @default(inbox)\n\n  @@index([threadId])\n  @@index([emailLabel])\n  @@index([sentAt])\n}\n\nenum EmailLabel {\n  inbox\n  sent\n  draft\n}\n\nmodel EmailAddress {\n  id            String  @id @default(cuid())\n  name          String?\n  address       String\n  raw           String?\n  sentEmails    Email[] @relation(\"FromEmail\")\n  receivedTo    Email[] @relation(\"ToEmails\")\n  receivedCc    Email[] @relation(\"CcEmails\")\n  receivedBcc   Email[] @relation(\"BccEmails\")\n  replyToEmails Email[] @relation(\"ReplyToEmails\")\n\n  accountId String\n  account   Account @relation(fields: [accountId], references: [id])\n\n  @@unique([accountId, address])\n}\n\nmodel EmailAttachment {\n  id              String  @id @default(cuid())\n  name            String\n  mimeType        String\n  size            Int\n  inline          Boolean\n  contentId       String?\n  content         String?\n  contentLocation String?\n  Email           Email   @relation(fields: [emailId], references: [id])\n  emailId         String\n}\n\nenum Sensitivity {\n  normal\n  private\n  personal\n  confidential\n}\n\nenum MeetingMessageMethod {\n  request\n  reply\n  cancel\n  counter\n  other\n}\n",
+  "inlineSchemaHash": "3b826c9541c8304798355b5b7ca4c7e83ce2f545505dbd1bbccada77fd767cb2",
   "copyEngine": true
 }
 config.dirname = '/'
 
-config.runtimeDataModel = JSON.parse("{\"models\":{\"User\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"emailAddress\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"firstName\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"lastName\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"imageUrl\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"accounts\",\"kind\":\"object\",\"type\":\"Account\",\"relationName\":\"AccountToUser\"}],\"dbName\":null},\"Account\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"userId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"accessToken\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"emailAdress\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"user\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"AccountToUser\"}],\"dbName\":null}},\"enums\":{},\"types\":{}}")
+config.runtimeDataModel = JSON.parse("{\"models\":{\"User\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"emailAddress\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"firstName\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"lastName\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"imageUrl\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"stripeSubscriptionId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"stripeSubscription\",\"kind\":\"object\",\"type\":\"StripeSubscription\",\"relationName\":\"StripeSubscriptionToUser\"},{\"name\":\"role\",\"kind\":\"enum\",\"type\":\"Role\"},{\"name\":\"accounts\",\"kind\":\"object\",\"type\":\"Account\",\"relationName\":\"AccountToUser\"},{\"name\":\"chatbotInteraction\",\"kind\":\"object\",\"type\":\"ChatbotInteraction\",\"relationName\":\"ChatbotInteractionToUser\"}],\"dbName\":null},\"ChatbotInteraction\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"day\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"count\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"userId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"user\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"ChatbotInteractionToUser\"}],\"dbName\":null},\"StripeSubscription\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"userId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"user\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"StripeSubscriptionToUser\"},{\"name\":\"subscriptionId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"productId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"priceId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"customerId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"currentPeriodEnd\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"Account\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"userId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"accessToken\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"emailAdress\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"nextDeltaToken\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"user\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"AccountToUser\"},{\"name\":\"threads\",\"kind\":\"object\",\"type\":\"Thread\",\"relationName\":\"AccountToThread\"},{\"name\":\"emailAddresses\",\"kind\":\"object\",\"type\":\"EmailAddress\",\"relationName\":\"AccountToEmailAddress\"}],\"dbName\":null},\"Thread\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"subject\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"lastMessageDate\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"participantIds\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"accountId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"account\",\"kind\":\"object\",\"type\":\"Account\",\"relationName\":\"AccountToThread\"},{\"name\":\"done\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"inboxStatus\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"draftStatus\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"sentStatus\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"emails\",\"kind\":\"object\",\"type\":\"Email\",\"relationName\":\"EmailToThread\"}],\"dbName\":null},\"Email\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"threadId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"thread\",\"kind\":\"object\",\"type\":\"Thread\",\"relationName\":\"EmailToThread\"},{\"name\":\"createdTime\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"lastModifiedTime\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"sentAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"receivedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"internetMessageId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"subject\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"sysLabels\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"keywords\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"sysClassifications\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"sensitivity\",\"kind\":\"enum\",\"type\":\"Sensitivity\"},{\"name\":\"meetingMessageMethod\",\"kind\":\"enum\",\"type\":\"MeetingMessageMethod\"},{\"name\":\"from\",\"kind\":\"object\",\"type\":\"EmailAddress\",\"relationName\":\"FromEmail\"},{\"name\":\"fromId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"to\",\"kind\":\"object\",\"type\":\"EmailAddress\",\"relationName\":\"ToEmails\"},{\"name\":\"cc\",\"kind\":\"object\",\"type\":\"EmailAddress\",\"relationName\":\"CcEmails\"},{\"name\":\"bcc\",\"kind\":\"object\",\"type\":\"EmailAddress\",\"relationName\":\"BccEmails\"},{\"name\":\"replyTo\",\"kind\":\"object\",\"type\":\"EmailAddress\",\"relationName\":\"ReplyToEmails\"},{\"name\":\"hasAttachments\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"body\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"bodySnippet\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"attachments\",\"kind\":\"object\",\"type\":\"EmailAttachment\",\"relationName\":\"EmailToEmailAttachment\"},{\"name\":\"inReplyTo\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"references\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"threadIndex\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"internetHeaders\",\"kind\":\"scalar\",\"type\":\"Json\"},{\"name\":\"nativeProperties\",\"kind\":\"scalar\",\"type\":\"Json\"},{\"name\":\"folderId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"omitted\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"emailLabel\",\"kind\":\"enum\",\"type\":\"EmailLabel\"}],\"dbName\":null},\"EmailAddress\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"address\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"raw\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"sentEmails\",\"kind\":\"object\",\"type\":\"Email\",\"relationName\":\"FromEmail\"},{\"name\":\"receivedTo\",\"kind\":\"object\",\"type\":\"Email\",\"relationName\":\"ToEmails\"},{\"name\":\"receivedCc\",\"kind\":\"object\",\"type\":\"Email\",\"relationName\":\"CcEmails\"},{\"name\":\"receivedBcc\",\"kind\":\"object\",\"type\":\"Email\",\"relationName\":\"BccEmails\"},{\"name\":\"replyToEmails\",\"kind\":\"object\",\"type\":\"Email\",\"relationName\":\"ReplyToEmails\"},{\"name\":\"accountId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"account\",\"kind\":\"object\",\"type\":\"Account\",\"relationName\":\"AccountToEmailAddress\"}],\"dbName\":null},\"EmailAttachment\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"mimeType\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"size\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"inline\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"contentId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"content\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"contentLocation\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"Email\",\"kind\":\"object\",\"type\":\"Email\",\"relationName\":\"EmailToEmailAttachment\"},{\"name\":\"emailId\",\"kind\":\"scalar\",\"type\":\"String\"}],\"dbName\":null}},\"enums\":{},\"types\":{}}")
 defineDmmfProperty(exports.Prisma, config.runtimeDataModel)
 config.engineWasm = {
   getRuntime: async () => require('./query_engine_bg.js'),
