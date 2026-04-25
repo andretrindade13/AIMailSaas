@@ -10,7 +10,6 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
-import Link from "next/link"
 import { useLocalStorage } from "usehooks-ts"
 
 interface NavProps {
