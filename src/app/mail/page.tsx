@@ -1,10 +1,15 @@
 'use client'
 
 import React from 'react'
+import Mail from './mail'
 
 const MailDashboard = () => {
   return (
-    <div>MailDashboard</div>
+    <Mail 
+      defaultLayout={[20, 32, 48]}
+      navColapsedSize={50}
+      defaultColapsed={false}
+    />
   )
 }
 

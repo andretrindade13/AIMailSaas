@@ -1,9 +1,11 @@
 import { Account } from "@/lib/Account";
+import { syncEmailsToDatabase } from "@/lib/sync-to-db";
+import type { EmailMessage } from "@/lib/types";
 import { db } from "@/server/db";
 import { NextResponse, type NextRequest } from "next/server";
 
 export const POST = async (req: NextRequest) => {
-    const {accountId, userId} = await req.json()
+    const {accountId, userId} = await req.json() as { accountId: string; userId: string }
     if (!accountId || !userId) return NextResponse.json({error: 'Missing accountId or userId'}, {status: 400})
 
     const dbAccount = await db.account.findUnique({
@@ -41,7 +43,11 @@ export const POST = async (req: NextRequest) => {
             nextDeltaToken:deltaToken
         }
     })
-    // await syncEmailsToDatabase(emails)
+    const params =  {
+        emails: emails as EmailMessage[],
+        accountId: accountId.toString()
+    }
+    await syncEmailsToDatabase(params.emails, params.accountId)
     
     console.log('sync completed', deltaToken)
     return NextResponse.json({success: true}, {status: 200})
