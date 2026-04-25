@@ -7,39 +7,47 @@ import { cn } from '@/lib/utils'
 import { Separator } from '@/components/ui/separator'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import AccountSwitcher from './account-switcher'
+import { Sidebar } from './sidebar'
 
 type Props = {
     defaultLayout: number[] | undefined
-    navColapsedSize?: number
+    navCollapsedSize?: number
     defaultColapsed?: boolean
 }
 
 
 
-function Mail({defaultLayout = [20,32,48], navColapsedSize, defaultColapsed}: Props) {
-    const [isColapsed, setIsCollapsed] = React.useState(defaultColapsed)
+function Mail({defaultLayout = [20,32,48], navCollapsedSize, defaultColapsed = false}: Props) {
+    const [isCollapsed, setIsCollapsed] = React.useState(defaultColapsed)
   return (
     <TooltipProvider delayDuration={0}>
-    <ResizablePanelGroup  
-        onLayoutChange={(sizes) => console.log('Panel sizes changed:', sizes)}
+    <ResizablePanelGroup 
+        orientation='horizontal' 
         className="itens-stretch h-full min-h-screen">
             <ResizablePanel 
-                defaultSize={defaultLayout[0]} collapsedSize={navColapsedSize} 
+                defaultSize={defaultLayout[0]}
+                collapsedSize={navCollapsedSize}
                 collapsible={true}
                 minSize={15}
                 maxSize={40}
                 onResize={() => {
-                    if(isColapsed) setIsCollapsed(false)
+                    setIsCollapsed(false)
+                    document.cookie = `react-resizable-panels:collapsed=${JSON.stringify(
+                    false
+                    )}`
                 }}
-                className={cn('min-w-[52px] transition-all duration-300 ease-in-out')}
+                className={cn(
+                    isCollapsed &&
+                    "min-w-[50px] transition-all duration-300 ease-in-out"
+                )}
             >
                 <div className='flex flex-col h-full flex-1'>
                     <div className='flex h-[56px] items-center justify-between px-4 py-2'>
-                        <AccountSwitcher isCollapsed={isColapsed} />
+                        <AccountSwitcher isCollapsed={isCollapsed} />
                     </div>
                     <Separator/>
                     {/** Sidebar */}
-                    Sidebar
+                    <Sidebar isCollapsed={isCollapsed} />
                     <div className='flex-1'></div>
                     {/** Ai */}
                     Ask AI
@@ -70,8 +78,7 @@ function Mail({defaultLayout = [20,32,48], navColapsedSize, defaultColapsed}: Pr
             <ResizablePanel defaultSize={defaultLayout[2]} minSize={30} maxSize={70}>
                 thread display  
             </ResizablePanel>
-    </ResizablePanelGroup>
-        
+    </ResizablePanelGroup> 
     </TooltipProvider>
   )
 }
