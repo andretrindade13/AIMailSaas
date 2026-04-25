@@ -10,9 +10,7 @@ export const POST = async (req: NextRequest) => {
 
     const dbAccount = await db.account.findUnique({
         where: {
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-call
             id: accountId.toString(),
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-call
             userId: userId.toString()
         }
     })
@@ -36,7 +34,6 @@ export const POST = async (req: NextRequest) => {
     //update deltaToken in database
     await db.account.update({
         where: {
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-call
             id: accountId.toString()
         },
         data: {

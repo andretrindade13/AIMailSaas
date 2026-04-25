@@ -6,6 +6,7 @@ import {TooltipProvider} from '@/components/ui/tooltip'
 import { cn } from '@/lib/utils'
 import { Separator } from '@/components/ui/separator'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import AccountSwitcher from './account-switcher'
 
 type Props = {
     defaultLayout: number[] | undefined
@@ -30,12 +31,11 @@ function Mail({defaultLayout = [20,32,48], navColapsedSize, defaultColapsed}: Pr
                 onResize={() => {
                     if(isColapsed) setIsCollapsed(false)
                 }}
-                className={cn('min-w-\[50px] transition-all duration-300 ease-in-out')}
+                className={cn('min-w-[52px] transition-all duration-300 ease-in-out')}
             >
-                <div className='flex flex-col h-full flex-1 '>
-                    <div className='flex h-\[52px] items-center justify-between'>
-                        
-                        account switcher
+                <div className='flex flex-col h-full flex-1'>
+                    <div className='flex h-[56px] items-center justify-between px-4 py-2'>
+                        <AccountSwitcher isCollapsed={isColapsed} />
                     </div>
                     <Separator/>
                     {/** Sidebar */}
