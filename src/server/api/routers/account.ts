@@ -111,10 +111,11 @@ export const accountRouter = createTRPCRouter({
                     },
                     take: 15,  
                 },
-                orderBy: {
+                
+            },
+            orderBy: {
                     lastMessageDate: 'desc'
                 }
-            }
         })
 
     })

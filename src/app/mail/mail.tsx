@@ -8,6 +8,7 @@ import { Separator } from '@/components/ui/separator'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import AccountSwitcher from './account-switcher'
 import { Sidebar } from './sidebar'
+import ThreadList from './thread-list'
 
 type Props = {
     defaultLayout: number[] | undefined
@@ -67,10 +68,10 @@ function Mail({defaultLayout = [20,32,48], navCollapsedSize, defaultColapsed = f
                     {/** Search bar*/}
                     Search Bar
                     <TabsContent value='inbox'>
-                        Inbox
+                        <ThreadList />
                     </TabsContent>
                     <TabsContent value='done'>
-                        Done
+                        <ThreadList />
                     </TabsContent>
                 </Tabs>
             </ResizablePanel>
